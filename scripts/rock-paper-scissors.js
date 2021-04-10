@@ -56,8 +56,33 @@ function playRound(playerSelection, computerSelection) {
   return winningPlayerId;
 }
 
-const playerSelection = humanPlay();
-const computerSelection = computerPlay();
+function game() {
+  let playerScore = 0;
+  let computerScore = 0;
 
-let winningPlayerId = playRound(playerSelection, computerSelection);
-console.log(winningPlayerId);
+  for(let i = 0; i < 5; i++) {
+    let playerSelection = humanPlay();
+    let computerSelection = computerPlay();
+  
+    let winningPlayerId = playRound(playerSelection, computerSelection);
+
+    if (winningPlayerId === PLAYER_ID) {
+      playerScore++;
+    } else if (winningPlayerId === COMPUTER_ID) {
+      computerScore++;
+    }
+
+    console.log(`Player: ${playerScore} - Computer: ${computerScore}`);
+  }
+
+  if(playerScore > computerScore) {
+    console.log("Player wins!");
+  } else if(computerScore > playerScore) {
+    console.log("Computer wins!");
+  } else {
+    console.log("Oh no... it was tie :(");
+  }
+}
+
+game();
+
