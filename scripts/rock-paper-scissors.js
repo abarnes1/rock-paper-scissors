@@ -6,13 +6,11 @@ let playerScore = 0;
 let computerScore = 0;
 
 function computerPlay() {
-  let choiceIndex = Math.floor(Math.random() * CHOICES.length);
+  const choiceIndex = Math.floor(Math.random() * CHOICES.length);
   return CHOICES[choiceIndex];
 }
 
 function playRound(playerSelection, computerSelection) {
-  console.log(`${playerSelection} vs ${computerSelection}`);
-
   let winningPlayerId = -1;
   let flavorText = '';
 
@@ -20,33 +18,23 @@ function playRound(playerSelection, computerSelection) {
       (playerSelection === 'paper' && computerSelection === 'rock') ||
       (playerSelection === 'scissors' && computerSelection === 'paper')) {
     winningPlayerId = PLAYER_ID;
+    playerScore++;
     flavorText = `Player's ${playerSelection} beats computer's ${computerSelection}`;
   } else if ((computerSelection === 'rock' && playerSelection === 'scissors') ||
       (computerSelection === 'paper' && playerSelection === 'rock') ||
       (computerSelection === 'scissors' && playerSelection === 'paper')) {
     winningPlayerId = COMPUTER_ID;
+    computerScore++;
     flavorText = `Computer's ${computerSelection} beats players's ${playerSelection}`;
   } else {
     flavorText = `${computerSelection} vs ${playerSelection}... nobody wins`;
   }
-
-  scoreRound(winner);
+  
   setRoundResult(flavorText);
-
-  return winningPlayerId;
-}
-
-function scoreRound(winningPlayerId){
-  if(winningPlayerId === PLAYER_ID){
-    playerScore++;
-  } else if(winningPlayerId === COMPUTER_ID){
-    computerScore++;
-  }
-
   updateScoreboard();
 
   if(playerScore === 5 || computerScore === 5) {
-    gameOver(winningPlayerId);
+    declareWinner(winningPlayerId);
   }
 }
 
@@ -58,25 +46,24 @@ function createButtonEvents(){
       const playerChoice = e.target.id;
       const computerChoice = computerPlay();
 
-      const winner = playRound(playerChoice, computerChoice);
-
+      playRound(playerChoice, computerChoice);
     });
   });
 
-  const resetButton = document.querySelector('#resetButton');
+  const resetButton = document.querySelector('#reset');
   resetButton.addEventListener('click', initializeGame);
 }
 
-function gameOver(winningPlayerId){
+function declareWinner(winningPlayerId){
   if(winningPlayerId === PLAYER_ID){
     setGameResult("Player wins!");
   } else if(winningPlayerId === COMPUTER_ID) {
     setGameResult("Computer wins!");
   }
 
-  toggleChoiceButtons(false);
+  enableChoiceButtons(false);
 
-  const resetButton = document.querySelector('#resetButton');
+  const resetButton = document.querySelector('#reset');
   resetButton.classList.toggle("hidden");
 }
 
@@ -86,10 +73,10 @@ function initializeGame(){
 
   setRoundResult('Choose your weapon');
   updateScoreboard();
-  setGameResult();
-  toggleChoiceButtons(true);
+  setGameResult('');
+  enableChoiceButtons(true);
 
-  const resetButton = document.querySelector('#resetButton');
+  const resetButton = document.querySelector('#reset');
   resetButton.classList.toggle("hidden");
 }
 
@@ -104,7 +91,7 @@ function updateScoreboard(){
 }
 
 function setGameResult(message){
-  const gameOverDiv = document.getElementById("gameWinner");
+  const gameOverDiv = document.getElementById("gameResult");
 
   if(message){
     gameOverDiv.textContent = message;
@@ -113,7 +100,7 @@ function setGameResult(message){
   }
 }
 
-function toggleChoiceButtons(enable){
+function enableChoiceButtons(enable){
   const choiceButtons = document.querySelectorAll(".playerChoice");
 
   choiceButtons.forEach((button) => {
@@ -128,4 +115,3 @@ function toggleChoiceButtons(enable){
 createButtonEvents();
 
 initializeGame();
-
