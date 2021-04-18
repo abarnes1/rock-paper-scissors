@@ -19,17 +19,17 @@ function playRound(playerSelection, computerSelection) {
       (playerSelection === 'scissors' && computerSelection === 'paper')) {
     winningPlayerId = PLAYER_ID;
     playerScore++;
-    flavorText = `Player's ${playerSelection} beats computer's ${computerSelection}`;
+    flavorText = `Player's ${playerSelection} beats computer's ${computerSelection}!`;
   } else if ((computerSelection === 'rock' && playerSelection === 'scissors') ||
       (computerSelection === 'paper' && playerSelection === 'rock') ||
       (computerSelection === 'scissors' && playerSelection === 'paper')) {
     winningPlayerId = COMPUTER_ID;
     computerScore++;
-    flavorText = `Computer's ${computerSelection} beats players's ${playerSelection}`;
+    flavorText = `Computer's ${computerSelection} beats player's ${playerSelection}!`;
   } else {
-    flavorText = `${computerSelection} vs ${playerSelection}... nobody wins`;
+    flavorText = `It's a tie... ${computerSelection} vs ${playerSelection}...`;
   }
-  
+
   setRoundResult(flavorText);
   updateScoreboard();
 
@@ -39,7 +39,7 @@ function playRound(playerSelection, computerSelection) {
 }
 
 function createButtonEvents(){
-  const choiceButtons = document.querySelectorAll(".playerChoice");
+  const choiceButtons = document.querySelectorAll(".btn-choice");
 
   choiceButtons.forEach((button) => {
     button.addEventListener('click', (e) => {
@@ -86,8 +86,11 @@ function setRoundResult(message){
 }
 
 function updateScoreboard(){
-  const scoreBoardDiv = document.getElementById("scoreboard");
-  scoreBoardDiv.textContent = `Player: ${playerScore} | Computer: ${computerScore}`;
+  const playerDisplay = document.getElementById("playerScore");
+  playerDisplay.textContent = `${playerScore}`;
+
+  const computerDisplay = document.getElementById("computerScore");
+  computerDisplay.textContent = `${computerScore}`;
 }
 
 function setGameResult(message){
@@ -101,7 +104,7 @@ function setGameResult(message){
 }
 
 function enableChoiceButtons(enable){
-  const choiceButtons = document.querySelectorAll(".playerChoice");
+  const choiceButtons = document.querySelectorAll(".btn-choice");
 
   choiceButtons.forEach((button) => {
     if(enable){
