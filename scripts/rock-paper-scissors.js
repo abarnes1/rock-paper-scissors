@@ -2,87 +2,130 @@ const CHOICES = ["rock", "paper", "scissors"];
 const PLAYER_ID = 0;
 const COMPUTER_ID = 1;
 
+let playerScore = 0;
+let computerScore = 0;
+
 function computerPlay() {
   let choiceIndex = Math.floor(Math.random() * CHOICES.length);
   return CHOICES[choiceIndex];
-}
-
-function humanPlay() {
-  let keepGoing = true;
-  let userInput;
-
-  while (keepGoing) {
-    userInput = prompt("Rock, paper, or scissors?");
-
-    if (userInput) {
-      userInput = userInput.toLowerCase();
-      
-      if (isValidChoice(userInput)) {
-        keepGoing = false;
-      } else {
-        console.log("Invalid choice, trying again");
-      }
-    } else {
-      console.log("No choice made, trying again");
-    }
-  }
-
-  return userInput;
-}
-
-function isValidChoice (choice) {
-  return CHOICES.indexOf(choice) > -1;
 }
 
 function playRound(playerSelection, computerSelection) {
   console.log(`${playerSelection} vs ${computerSelection}`);
 
   let winningPlayerId = -1;
+  let flavorText = '';
 
   if ((playerSelection === 'rock' && computerSelection === 'scissors') ||
       (playerSelection === 'paper' && computerSelection === 'rock') ||
       (playerSelection === 'scissors' && computerSelection === 'paper')) {
     winningPlayerId = PLAYER_ID;
-    console.log(`Player's ${playerSelection} beats computer's ${computerSelection}`);
+    flavorText = `Player's ${playerSelection} beats computer's ${computerSelection}`;
   } else if ((computerSelection === 'rock' && playerSelection === 'scissors') ||
       (computerSelection === 'paper' && playerSelection === 'rock') ||
       (computerSelection === 'scissors' && playerSelection === 'paper')) {
     winningPlayerId = COMPUTER_ID;
-    console.log(`Computer's ${computerSelection} beats players's ${playerSelection}`);
+    flavorText = `Computer's ${computerSelection} beats players's ${playerSelection}`;
   } else {
-    console.log(`${computerSelection} vs ${playerSelection}... nobody wins`);
+    flavorText = `${computerSelection} vs ${playerSelection}... nobody wins`;
   }
+
+  scoreRound(winner);
+  setRoundResult(flavorText);
 
   return winningPlayerId;
 }
 
-function game() {
-  let playerScore = 0;
-  let computerScore = 0;
-
-  for(let i = 0; i < 5; i++) {
-    let playerSelection = humanPlay();
-    let computerSelection = computerPlay();
-  
-    let winningPlayerId = playRound(playerSelection, computerSelection);
-
-    if (winningPlayerId === PLAYER_ID) {
-      playerScore++;
-    } else if (winningPlayerId === COMPUTER_ID) {
-      computerScore++;
-    }
-
-    console.log(`Player: ${playerScore} - Computer: ${computerScore}`);
+function scoreRound(winningPlayerId){
+  if(winningPlayerId === PLAYER_ID){
+    playerScore++;
+  } else if(winningPlayerId === COMPUTER_ID){
+    computerScore++;
   }
 
-  if(playerScore > computerScore) {
-    console.log("Player wins!");
-  } else if(computerScore > playerScore) {
-    console.log("Computer wins!");
-  } else {
-    console.log("Oh no... it was tie :(");
+  updateScoreboard();
+
+  if(playerScore === 5 || computerScore === 5) {
+    gameOver(winningPlayerId);
   }
 }
 
-game();
+function createButtonEvents(){
+  const choiceButtons = document.querySelectorAll(".playerChoice");
+
+  choiceButtons.forEach((button) => {
+    button.addEventListener('click', (e) => {
+      const playerChoice = e.target.id;
+      const computerChoice = computerPlay();
+
+      const winner = playRound(playerChoice, computerChoice);
+
+    });
+  });
+
+  const resetButton = document.querySelector('#resetButton');
+  resetButton.addEventListener('click', initializeGame);
+}
+
+function gameOver(winningPlayerId){
+  if(winningPlayerId === PLAYER_ID){
+    setGameResult("Player wins!");
+  } else if(winningPlayerId === COMPUTER_ID) {
+    setGameResult("Computer wins!");
+  }
+
+  toggleChoiceButtons(false);
+
+  const resetButton = document.querySelector('#resetButton');
+  resetButton.classList.toggle("hidden");
+}
+
+function initializeGame(){
+  playerScore = 0;
+  computerScore = 0;
+
+  setRoundResult('Choose your weapon');
+  updateScoreboard();
+  setGameResult();
+  toggleChoiceButtons(true);
+
+  const resetButton = document.querySelector('#resetButton');
+  resetButton.classList.toggle("hidden");
+}
+
+function setRoundResult(message){
+  const resultDiv = document.getElementById("roundResult");
+  resultDiv.textContent = message;
+}
+
+function updateScoreboard(){
+  const scoreBoardDiv = document.getElementById("scoreboard");
+  scoreBoardDiv.textContent = `Player: ${playerScore} | Computer: ${computerScore}`;
+}
+
+function setGameResult(message){
+  const gameOverDiv = document.getElementById("gameWinner");
+
+  if(message){
+    gameOverDiv.textContent = message;
+  } else {
+    gameOverDiv.textContent = '';
+  }
+}
+
+function toggleChoiceButtons(enable){
+  const choiceButtons = document.querySelectorAll(".playerChoice");
+
+  choiceButtons.forEach((button) => {
+    if(enable){
+      button.disabled = false;
+    } else {
+      button.disabled = true;
+    }
+  });
+}
+
+createButtonEvents();
+
+initializeGame();
 
