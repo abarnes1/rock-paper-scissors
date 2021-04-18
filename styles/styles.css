@@ -5,7 +5,6 @@
 
 body {
   font-family: "Helvetica", "sans-serif";
-  /* font-family: "Chawp", "Helvetica", "sans-serif"; */
   color: whitesmoke;
   background-color:#2E3330;
 } 
@@ -60,6 +59,10 @@ h1 {
   border-radius: 20px;
   margin: 0px 10px;
   padding: 5px;
+}
+
+.btn-choice:hover {
+  transform: scale(1.1);
 }
 
 .btn-choice:focus {
